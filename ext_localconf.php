@@ -6,5 +6,5 @@ if(!is_array($TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['checkAl
 array_unshift($TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['checkAlternativeIdMethods-PostProc'],'EXT:ods_redirects/class.tx_odsredirects.php:&tx_odsredirects->checkRedirect');
 
 // Plugin redirects
-t3lib_extMgm::addPItoST43($_EXTKEY, 'pi1/class.tx_odsredirects_pi1.php', '_pi1', 'list_type', 0);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43($_EXTKEY, 'pi1/class.tx_odsredirects_pi1.php', '_pi1', 'list_type', 0);
 ?>

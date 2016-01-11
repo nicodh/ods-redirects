@@ -74,7 +74,7 @@ class tx_odsredirects {
 				array(
 					'counter' => 'counter+1',
 					'tstamp' => time(),
-					'last_referer' => t3lib_div::getIndpEnv('HTTP_REFERER')
+					'last_referer' => \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER')
 				),
 				array('counter')
 			);
@@ -95,7 +95,7 @@ class tx_odsredirects {
 			if ($redirect['has_moved']) {
 				header('HTTP/1.1 301 Moved Permanently');
 			}
-			header('Location: '.t3lib_div::locationHeaderUrl($destination));
+			header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($destination));
 			header('X-Note: Redirect by ods_redirects');
 			header('Connection: close');
 			exit();
@@ -141,7 +141,7 @@ class tx_odsredirects {
 		$conf=unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ods_redirects']);
 
 		// Language from L
-		$L=is_numeric(t3lib_div::_GP('L')) ? intval(t3lib_div::_GP('L')) : false;
+		$L=is_numeric(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L')) ? intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L')) : false;
 
 		// Language from speaking URL
 		if(!$L && $conf['lang_detect'] && $source){
@@ -160,17 +160,22 @@ class tx_odsredirects {
 
 	function buildURL($id,$L=false){
 		if($id){
+			// http://wissen.netzhaut.de/typo3/extensionentwicklung/typolink-realurl-in-scheduler-tasks/
+			\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
+			$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',  $GLOBALS['TYPO3_CONF_VARS'], $id, 0);
+			$GLOBALS['TSFE']->connectToDB();
+			$GLOBALS['TSFE']->initFEuser();
 			$GLOBALS['TSFE']->determineId();
-			$GLOBALS['TSFE']->getCompressedTCarray();
 			$GLOBALS['TSFE']->initTemplate();
 			$GLOBALS['TSFE']->getConfigArray();
 
-			// Set linkVars, absRefPrefix, etc
-			require_once(PATH_tslib . 'class.tslib_pagegen.php');
-			TSpagegen::pagegenInit();
+			if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
+				$rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($id);
+				$host = \TYPO3\CMS\Backend\Utility\BackendUtility::firstDomainRecord($rootline);
+				$_SERVER['HTTP_HOST'] = $host;
+			}
 
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
-			$cObj->start(array());
+			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			$url = $cObj->getTypoLink_URL($id, $L ? array('L'=>$L) : array());
 			return $url;
 		}

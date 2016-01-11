@@ -2,9 +2,6 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Robert Heel <rheel@1drop.de>
-*  All rights reserved
-*
 *  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -21,23 +18,16 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- * Hint: use extdeveval to insert/update function index above.
- */
-
-require_once(PATH_tslib.'class.tslib_pibase.php');
 
 
 /**
  * Plugin 'Redirect' for the 'ods_redirects' extension.
  *
- * @author    Robert Heel <rheel@1drop.de>
+ * @author    Robert Heel <typo3@bobosch.de>
  * @package    TYPO3
  * @subpackage    tx_odsredirects
  */
-class tx_odsredirects_pi1 extends tslib_pibase {
+class tx_odsredirects_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	var $prefixId      = 'tx_odsredirects_pi1';        // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_odsredirects_pi1.php';    // Path to this script relative to the extension dir.
 	var $extKey        = 'ods_redirects';    // The extension key.
@@ -62,7 +52,7 @@ class tx_odsredirects_pi1 extends tslib_pibase {
 	// 		if ($redirect['has_moved']) {
 				header('HTTP/1.1 301 Moved Permanently');
 	// 		}
-			header('Location: '.t3lib_div::locationHeaderUrl($destination));
+			header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($destination));
 			header('X-Note: Redirect by ods_redirects');
 			header('Connection: close');
 			exit();

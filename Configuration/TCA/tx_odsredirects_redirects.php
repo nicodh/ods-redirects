@@ -1,12 +1,21 @@
 <?php
-if (!defined ('TYPO3_MODE')) die ('Access denied.');
-
-$TCA['tx_odsredirects_redirects'] = array (
-	'ctrl' => $TCA['tx_odsredirects_redirects']['ctrl'],
+return array (
+	'ctrl' => array (
+		'title' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects',
+		'label' => 'url',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'default_sortby' => 'ORDER BY url',
+		'rootLevel' => -1,
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+		),
+		'iconfile' => 'EXT:ods_redirects/icon_tx_odsredirects_redirects.png',
+	),
 	'interface' => array (
 		'showRecordFieldList' => 'hidden,domain_id,url,mode,destination,append,has_moved,last_referer,counter'
 	),
-	'feInterface' => $TCA['tx_odsredirects_redirects']['feInterface'],
 	'columns' => array (
 		'hidden' => array (
 			'exclude' => 0,
@@ -21,6 +30,7 @@ $TCA['tx_odsredirects_redirects'] = array (
 			'label' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.domain_id',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
 					array('',0),
 				),
@@ -41,18 +51,19 @@ $TCA['tx_odsredirects_redirects'] = array (
 		),
 		'mode' => array (
 			'exclude' => 0,
-			'label' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode',		
+			'label' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode',
 			'config' => array (
 				'type' => 'select',
+				'renderType' => 'selectSingle',
 				'items' => array (
-				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.0', '0'),
-				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.1', '1'),
-				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.2', '2'),
-// 				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.3', '3'),
- 				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.4', '4'),
-			),
-			'size' => 1,
-			'maxitems' => 1,
+					array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.0', '0'),
+					array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.1', '1'),
+					array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.2', '2'),
+	// 				array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.3', '3'),
+					array('LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.mode.I.4', '4'),
+				),
+				'size' => 1,
+				'maxitems' => 1,
 			)
 		),
 		'destination' => array (
@@ -64,13 +75,18 @@ $TCA['tx_odsredirects_redirects'] = array (
 				'max'      => 255,
 				'checkbox' => '',
 				'eval'     => 'trim',
-				'wizards'  => array(
-					'_PADDING' => 2,
-					'link'     => array(
+				'wizards'  => array (
+					'link'     => array (
 						'type'         => 'popup',
 						'title'        => 'Link',
-						'icon'         => 'link_popup.gif',
-						'script'       => 'browse_links.php?mode=wizard',
+						'icon'         => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
+						'module' => array (
+							'name' => 'wizard_element_browser',
+							'urlParameters' => array(
+								'mode' => 'wizard',
+								'act' => 'page',
+							)
+						),
 						'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1'
 					)
 				)
