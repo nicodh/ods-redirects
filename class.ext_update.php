@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Robert Heel (rheel@1drop.de)
+*  (c) 2010 Robert Heel (typo3@bobosch.de)
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -23,14 +23,65 @@
 ***************************************************************/
 
 class ext_update {
-	function main(){
-		$GLOBALS['TYPO3_DB']->sql_query('REPLACE INTO tx_odsredirects_redirects(mode,url,destination,last_referer,counter,tstamp,has_moved) SELECT 1,url,destination,last_referer,counter,tstamp,has_moved FROM tx_realurl_redirects');
-		$content='Imported realurl redirect table.';
-		return $content;
+	protected $messageArray = array();
+
+	public function access() {
+		return true;
 	}
 
-	function access(){
-		return true;
+	/**
+	 * Main update function called by the extension manager.
+	 *
+	 * @return string
+	 */
+	public function main() {
+		$this->processUpdates();
+		return $this->generateOutput();
+	}
+	
+	/**
+	 * Generates output by using flash messages
+	 *
+	 * @return string
+	 */
+	protected function generateOutput() {
+		$output = '';
+		foreach ($this->messageArray as $messageItem) {
+			$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\CMS\Core\Messaging\FlashMessage',
+				$messageItem[2],
+				$messageItem[1],
+				$messageItem[0]);
+			$output .= $flashMessage->render();
+		}
+
+		return $output;
+	}
+
+	/**
+	 * The actual update function. Add your update task in here.
+	 *
+	 * @return void
+	 */
+	protected function processUpdates() {
+		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
+			$this->importRealurlRedirects();
+		}
+	}
+	
+	protected function importRealurlRedirects() {
+		$title = 'Import redirects from RealURL';
+		$message = 'Nothing to import.';
+		$status = \TYPO3\CMS\Core\Messaging\FlashMessage::OK;
+
+		$GLOBALS['TYPO3_DB']->sql_query('REPLACE INTO tx_odsredirects_redirects(mode,url,destination,last_referer,counter,tstamp,has_moved) SELECT 1,url,destination,last_referer,counter,tstamp,has_moved FROM tx_realurl_redirects');
+		$count=$GLOBALS['TYPO3_DB']->sql_affected_rows();
+		
+		if($count) {
+			$message='Imported ' . $count . ' redirects.';
+		}
+
+		$this->messageArray[] = array($status, $title, $message);
 	}
 }
 

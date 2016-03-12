@@ -1,5 +1,6 @@
 2016-03-12 Robert Heel <typo3@bobosch.de>
 	* Add: UID of redirect element in X-Note header.
+	* Update: Rewrote update script.
 
 2016-01-11 Robert Heel <typo3@bobosch.de>
 	* Bugfix: Compatibility to TYPO3 7.x
