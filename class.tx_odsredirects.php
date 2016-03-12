@@ -96,7 +96,7 @@ class tx_odsredirects {
 				header('HTTP/1.1 301 Moved Permanently');
 			}
 			header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($destination));
-			header('X-Note: Redirect by ods_redirects');
+			header('X-Note: Redirect by ods_redirects [' . $redirect['uid'] . ']');
 			header('Connection: close');
 			exit();
 		}
