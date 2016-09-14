@@ -168,6 +168,7 @@ class tx_odsredirects {
 			$GLOBALS['TSFE']->determineId();
 			$GLOBALS['TSFE']->initTemplate();
 			$GLOBALS['TSFE']->getConfigArray();
+			$GLOBALS['TSFE']->calculateLinkVars();
 
 			if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
 				$rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($id);
