@@ -41,6 +41,22 @@ return array (
 				'maxitems' => 1,
 			)
 		),
+        'language_id' => array (
+            'exclude' => 0,
+            'label' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.language_id',
+            'config' => array (
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => array (
+                    array('Default',0),
+                ),
+                'foreign_table' => 'sys_language',
+                'foreign_table_where' => 'ORDER BY sys_language.title',
+                'size' => 1,
+                'minitems' => 0,
+                'maxitems' => 1,
+            )
+        ),
 		'url' => array (
 			'exclude' => 0,
 			'label' => 'LLL:EXT:ods_redirects/locallang_db.xml:tx_odsredirects_redirects.url',
@@ -125,7 +141,7 @@ return array (
 		),
 	),
 	'types' => array (
-		'0' => array('showitem' => 'hidden;;;;1-1-1, domain_id;;;;2-2-2, url, mode, destination;;1;;3-3-3, last_referer;;;;4-4-4, counter')
+		'0' => array('showitem' => 'hidden;;;;1-1-1, domain_id;;;;2-2-2, language_id;;;;2-2-2, url, mode, destination;;1;;3-3-3, last_referer;;;;4-4-4, counter')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => 'append, has_moved')
