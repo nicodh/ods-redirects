@@ -9,6 +9,7 @@ CREATE TABLE tx_odsredirects_redirects (
 	cruser_id int(10) unsigned DEFAULT '0' NOT NULL,
 	hidden tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	domain_id int(10) unsigned DEFAULT '0' NOT NULL,
+	language_id int(10) unsigned DEFAULT '0' NOT NULL,
 	url varchar(255) DEFAULT '' NOT NULL,
 	mode tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	destination varchar(255) DEFAULT '' NOT NULL,

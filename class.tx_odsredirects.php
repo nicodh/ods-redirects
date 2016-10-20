@@ -20,17 +20,14 @@ class tx_odsredirects {
 
         // Create query
         $where = array(
-            '(mode=0 AND url=LEFT(' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url,
-                                                                         'tx_odsredirects_redirects') . ',LENGTH(url)))', // Begins with URL
-            '(mode=1 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($path,
-                                                                    'tx_odsredirects_redirects') . ')', // Path match
-            '(mode=2 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url,
-                                                                    'tx_odsredirects_redirects') . ')', // Path and query string match
-            '(mode=4 AND ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url,
-                                                                'tx_odsredirects_redirects') . ' REGEXP url)', // Path and query string regex match
+            '(mode=0 AND url=LEFT(' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url, 'tx_odsredirects_redirects') . ',LENGTH(url)))', // Begins with URL
+            '(mode=1 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($path, 'tx_odsredirects_redirects') . ')', // Path match
+            '(mode=2 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url, 'tx_odsredirects_redirects') . ')', // Path and query string match
+            '(mode=4 AND ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($url, 'tx_odsredirects_redirects') . ' REGEXP url)', // Path and query string regex match
         );
-        if (substr($path, -1) != '/') $where[] = '(mode=1 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($path . '/',
-                                                                                                         'tx_odsredirects_redirects') . ')'; // Path match if entered without trailing '/'
+        if (substr($path, -1) != '/') {
+            $where[] = '(mode=1 AND url=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($path . '/', 'tx_odsredirects_redirects') . ')';
+        } // Path match if entered without trailing '/'
 
         // Fetch redirects
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -60,8 +57,7 @@ class tx_odsredirects {
                         $res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                             'uid',
                             'sys_domain',
-                            'domainName=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($_SERVER['HTTP_HOST'],
-                                                                               'sys_domain') . ' AND hidden=0'
+                            'domainName=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($_SERVER['HTTP_HOST'],'sys_domain') . ' AND hidden=0'
                         );
                         $row2 = $GLOBALS['TYPO3_DB']->sql_fetch_row($res2);
                         $domain_id = $row2[0];
@@ -78,7 +74,6 @@ class tx_odsredirects {
                 }
             }
         }
-
         // Do redirect
         if ($redirect) {
             // Update statistics
@@ -97,13 +92,15 @@ class tx_odsredirects {
             if ($redirect['mode'] == 4){
                 $redirect['destination'] = preg_replace('/' . $redirect['url'] . '/i', $redirect['destination'], $url);
             }
-            $destination = $this->getLink($redirect['destination'], $_SERVER['HTTP_HOST'] . '/' . $url);
+            $destination = $this->getLink($redirect, $_SERVER['HTTP_HOST'] . '/' . $url);
 
             // Append trailing url
             if ($redirect['append']) {
                 $append = substr($url, strlen($redirect['url']));
                 // Replace ? by & if query parts appended to non speaking url
-                if (strpos($destination, '?') && substr($append, 0, 1) == '?') $append = '&' . substr($append, 1);
+                if (strpos($destination, '?') && substr($append, 0, 1) == '?') {
+                    $append = '&' . substr($append, 1);
+                }
                 $destination .= $append;
             }
 
@@ -118,7 +115,8 @@ class tx_odsredirects {
         }
     }
 
-    function getLink($destination, $source = '') {
+    function getLink($redirect, $source = '') {
+        $destination = $redirect['destination'];
         // $destination='test@example.com'; // email
         // $destination='http://example.com/test.html'; // URL
         // $destination='example.com'; // URL without http://
@@ -144,11 +142,17 @@ class tx_odsredirects {
             return $destination;
         } elseif (is_numeric($destination)) {
             // page id
-            // language detection
-            $L = $this->languageDetection($source);
+            if (!empty($redirect['language_id'])) {
+                $L = $redirect['language_id'];
+            } else {
+                // language detection
+                $L = $this->languageDetection($source);
+            }
             // build URL
             $url = $this->buildURL($destination, $L);
-            if (!$url) $url = 'index.php?id=' . $destination . ($L === false ? '' : '&L=' . $L);
+            if (!$url) {
+                $url = 'index.php?id=' . $destination . ($L === false ? '' : '&L=' . $L);
+            }
             return $url;
         } else {
             // alias
@@ -171,7 +175,9 @@ class tx_odsredirects {
                 $lang_detect[$parts[0]] = $parts[1];
             }
             foreach ($lang_detect as $str => $id) {
-                if (strpos($source, strval($str)) !== false) $L = intval($id);
+                if (strpos($source, strval($str)) !== false) {
+                    $L = intval($id);
+                }
             }
         }
         return $L;
